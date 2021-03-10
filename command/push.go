@@ -32,9 +32,19 @@ var pushCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("docker tag %s %s\n", args[0], newImage)
-		cmdline := exec.Command("docker", "tag", args[0], newImage)
+
+		cmdline := exec.Command("docker", "pull", args[0])
 		var out bytes.Buffer
+		cmdline.Stdout = &out
+		err = cmdline.Run()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s\n", out.String())
+
+		fmt.Printf("docker tag %s %s\n", args[0], newImage)
+		cmdline = exec.Command("docker", "tag", args[0], newImage)
+
 		cmdline.Stdout = &out
 		err = cmdline.Run()
 		if err != nil {
